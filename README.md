@@ -3,7 +3,7 @@
 ## Identitas Mahasiswa
 
 * **Nama:** Marsha Yohan Widyarahma
-* **NIM:** 51245000022
+* **NIM:** 5124500022
 * **Kelas:** 2 D3 MMB A
 
 ## Deskripsi
