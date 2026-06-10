@@ -33,8 +33,12 @@
             place-items: end center;
             transform: rotateX(var(--rx)) rotateY(var(--ry));
             transform-style: preserve-3d;
-            transition: transform 180ms ease-out;
+            transition: transform 300ms ease-out;
             will-change: transform;
+            cursor: grab;
+        }
+        .avatar-orbit:active {
+            cursor: grabbing;
         }
         .avatar-orbit::before {
             content: "";
@@ -114,10 +118,28 @@
             .avatar-float { animation: none; }
             .avatar-orbit { transition: none; }
         }
+        
+        .typing-indicator span {
+            animation: blink 1.4s infinite both;
+            height: 6px;
+            width: 6px;
+            background: #4f46e5;
+            display: inline-block;
+            border-radius: 50%;
+            margin: 0 1px;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: .2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: .4s; }
+        @keyframes blink {
+            0% { opacity: .2; }
+            20% { opacity: 1; }
+            100% { opacity: .2; }
+        }
     </style>
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
+    <!-- NAVBAR -->
     <nav class="sticky top-0 z-40 bg-[#FDFBF7]/80 backdrop-blur-md border-b border-orange-100">
         <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
             <a href="#" class="text-xl font-bold tracking-tight text-indigo-950 uppercase">MARSHA<span class="text-rose-500">.</span></a>
@@ -131,6 +153,7 @@
         </div>
     </nav>
 
+    <!-- HERO SECTION -->
     <section id="home" class="py-12 md:py-24 max-w-6xl mx-auto px-6 w-full flex-grow flex flex-col md:flex-row items-center justify-between gap-12">
         <div class="w-full md:w-1/2 space-y-6 text-center md:text-left">
             <div class="inline-flex items-center gap-2 bg-rose-50 text-rose-600 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-widest">
@@ -147,18 +170,19 @@
                 <a href="#about" class="w-full sm:w-auto text-center bg-white border border-slate-200 text-slate-700 font-bold px-8 py-4 rounded-2xl hover:bg-slate-50 transition-all">Kenal Lebih Dekat</a>
             </div>
         </div>
-        <div class="w-full md:w-1/2 flex justify-center relative avatar-stage" aria-label="Karakter 3D Marsha yang bergerak mengikuti kursor">
+        <div class="w-full md:w-1/2 flex justify-center relative avatar-stage" aria-label="Karakter 3D Marsha yang bisa digeser menggunakan kursor">
             <div class="avatar-orbit avatar-float" id="marshaAvatar">
                 <div class="avatar-depth">
-                    <img src="{{ asset('images/marsha-3d.png') }}" alt="" class="avatar-shadow" aria-hidden="true">
-                    <img src="{{ asset('images/marsha-3d.png') }}" alt="" class="avatar-rim" aria-hidden="true">
-                    <img src="{{ asset('images/marsha-3d.png') }}" alt="Marsha 3D Character" class="avatar-main">
+                    <img src="images/marsha-3d.png" alt="" class="avatar-shadow" aria-hidden="true">
+                    <img src="images/marsha-3d.png" alt="" class="avatar-rim" aria-hidden="true">
+                    <img src="images/marsha-3d.png" alt="Marsha 3D Character" class="avatar-main">
                     <span class="avatar-gloss" aria-hidden="true"></span>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- ABOUT SECTION -->
     <section id="about" class="py-24 bg-white border-y border-orange-50">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex flex-col lg:flex-row gap-16 items-start">
@@ -232,6 +256,7 @@
         </div>
     </section>
 
+    <!-- PORTFOLIO SECTION -->
     <section id="portfolio" class="py-24 max-w-6xl mx-auto px-6 w-full">
         <div class="text-center max-w-2xl mx-auto mb-20 space-y-4">
             <h2 class="text-xs font-bold tracking-[0.3em] text-rose-500 uppercase">Portfolio Gallery</h2>
@@ -240,37 +265,44 @@
         </div>
 
         <div class="grid md:grid-cols-2 gap-8">
-            <div class="md:col-span-2 bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col lg:flex-row">
-                <div class="lg:w-7/12 bg-black aspect-video lg:aspect-auto h-full">
-                    <iframe class="w-full h-full min-h-[300px]" src="https://www.youtube.com/embed/QSK43xNXY3k" title="Live Radio Announcer Studio TV 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <!-- PORTFOLIO 1: LIVE RADIO STREAMING (Bisa diklik menuju link YouTube Live) -->
+            <a href="https://www.youtube.com/live/QSK43xNXY3k?si=FNc3CRy0vsu9ROaz" target="_blank" rel="noopener noreferrer" class="md:col-span-2 bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col lg:flex-row cursor-pointer">
+                <div class="lg:w-7/12 bg-slate-100 aspect-video lg:aspect-auto h-full relative overflow-hidden flex items-center justify-center">
+                    <img src="images/innerspace-fm.png" alt="Marsha Announcer Innerspace FM" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                        <div class="w-16 h-16 bg-rose-500/90 text-white rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-play text-xl ml-1"></i>
+                        </div>
+                    </div>
                 </div>
                 <div class="lg:w-5/12 p-8 lg:p-12 flex flex-col justify-center space-y-6">
                     <div class="space-y-3">
-                        <span class="bg-rose-50 text-rose-600 text-[10px] font-bold px-3 py-1 rounded-lg uppercase tracking-wider">Highlight Project</span>
-                        <h4 class="text-2xl font-bold text-indigo-950 serif-title">Studio TV 1: Live Radio Streaming</h4>
-                        <p class="text-slate-600 text-sm leading-relaxed italic">"Halo Sobat Multimedia! Saya Marsha di sini sebagai Announcer program Studio TV 1..."</p>
+                        <span class="bg-rose-50 text-rose-600 text-[10px] font-bold px-3 py-1 rounded-lg uppercase tracking-wider">Highlight Project - Klik untuk Tonton</span>
+                        <h4 class="text-2xl font-bold text-indigo-950 serif-title group-hover:text-rose-500 transition-colors">Innerspace FM: Realita Mahasiswa Kampus</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed italic">"Halo Sobat Multimedia! Saya Marsha di sini sebagai Announcer program Innerspace FM..."</p>
                         <p class="text-slate-500 text-sm leading-relaxed">
-                            Pengalaman siaran radio secara live melalui YouTube, mengelola alur komunikasi dengan pendengar, serta menjalankan rundown program penyiaran yang dinamis.
+                            Pengalaman siaran live radio streaming interaktif, mengulas topik realita kehidupan mahasiswa, serta berkolaborasi langsung mengelola penyiaran digital program MMB PENS.
                         </p>
                     </div>
                     <div class="flex items-center gap-4 text-xs font-bold text-slate-400">
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-microphone"></i> Announcer</span>
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-microphone text-rose-500"></i> Live Announcer</span>
                         <span class="flex items-center gap-1"><i class="fa-solid fa-calendar"></i> 2025</span>
                     </div>
                 </div>
-            </div>
+            </a>
 
+            <!-- PORTFOLIO 2: VIDEO EXPLAINER HOT IN CREAM -->
             <div class="bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
-                <div class="h-56 bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center p-8 relative overflow-hidden">
-                    <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                    <i class="fa-solid fa-video text-6xl text-white/20 absolute -right-4 -bottom-4 group-hover:scale-125 transition-transform duration-500"></i>
-                    <h4 class="text-white text-xl font-bold text-center relative z-10 serif-title">Video Explainer "Hot In Cream"</h4>
+                <div class="h-56 bg-slate-100 relative overflow-hidden flex items-center justify-center">
+                    <img src="images/hotincream-thumbnail.png" alt="Video Explainer Hot In Cream Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70"></div>
+                    <h4 class="absolute bottom-6 left-6 text-white text-xl font-bold serif-title z-10">Video Explainer "Hot In Cream"</h4>
                 </div>
                 <div class="p-8 flex-grow flex flex-col justify-between space-y-6">
                     <div class="space-y-3">
                         <span class="text-[10px] font-bold text-rose-500 uppercase tracking-widest">Multimedia Asset</span>
                         <p class="text-slate-600 text-sm leading-relaxed">
-                            Pengembangan video promosi digital interaktif dengan fokus pada visualisasi produk dan pesan komersial yang persuasif untuk kebutuhan tugas praktikum video.
+                            Produksi video promosi digital komersial interaktif dengan fokus visualisasi animasi 2D produk pereda nyeri untuk kebutuhan tugas praktikum video.
                         </p>
                     </div>
                     <div class="flex items-center justify-between text-xs font-bold text-indigo-950 pt-4 border-t border-slate-50">
@@ -280,11 +312,12 @@
                 </div>
             </div>
 
+            <!-- PORTFOLIO 3: WEB SLICING TOKO AYAM ALMAZ -->
             <div class="bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
-                <div class="h-56 bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center p-8 relative overflow-hidden">
-                    <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-                    <i class="fa-solid fa-utensils text-6xl text-white/20 absolute -right-4 -bottom-4 group-hover:scale-125 transition-transform duration-500"></i>
-                    <h4 class="text-white text-xl font-bold text-center relative z-10 serif-title">Web Slicing: Toko Ayam Almaz</h4>
+                <div class="h-56 bg-slate-100 relative overflow-hidden flex items-center justify-center">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80" alt="Toko Ayam Almaz Project" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70"></div>
+                    <h4 class="absolute bottom-6 left-6 text-white text-xl font-bold serif-title z-10">Web Slicing: Toko Ayam Almaz</h4>
                 </div>
                 <div class="p-8 flex-grow flex flex-col justify-between space-y-6">
                     <div class="space-y-3">
@@ -302,6 +335,7 @@
         </div>
     </section>
 
+    <!-- FOOTER & CONTACT -->
     <footer id="contact" class="bg-indigo-950 text-white pt-24 pb-12 mt-auto rounded-t-[3rem]">
         <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-20">
             <div class="space-y-8 text-center md:text-left">
@@ -313,34 +347,35 @@
                 </div>
                 <div class="flex justify-center md:justify-start gap-6 text-2xl">
                     <a href="https://github.com/marsha131" target="_blank" class="hover:text-rose-500 transition-colors"><i class="fa-brands fa-github"></i></a>
-                    <a href="#" class="hover:text-rose-500 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.instagram.com/marshayohan?igsh=MTI1ZWx5ZHU2b2xxNw==" target="_blank" rel="noopener noreferrer" class="hover:text-rose-500 transition-colors"><i class="fa-brands fa-instagram"></i></a>
                     <a href="#" class="hover:text-rose-500 transition-colors"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
             </div>
 
             <div class="bg-white text-slate-800 p-10 rounded-[2.5rem] shadow-2xl shadow-indigo-950/50">
-                <form action="#" onsubmit="event.preventDefault();" class="space-y-5">
+                <form id="contactForm" action="https://formspree.io/f/xoqgkyre" method="POST" class="space-y-5">
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Nama Lengkap</label>
-                        <input type="text" class="w-full bg-slate-50 border-0 rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Masukkan nama Anda">
+                        <input type="text" name="name" required class="w-full bg-slate-50 border-0 rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Masukkan nama Anda">
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Email</label>
-                        <input type="email" class="w-full bg-slate-50 border-0 rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Email@anda.com">
+                        <input type="email" name="email" required class="w-full bg-slate-50 border-0 rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Email@anda.com">
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Pesan</label>
-                        <textarea class="w-full bg-slate-50 border-0 rounded-2xl px-6 py-4 text-sm h-32 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Halo Marsha, saya ingin berdiskusi mengenai..."></textarea>
+                        <textarea name="message" required class="w-full bg-slate-50 border-0 rounded-2xl px-6 py-4 text-sm h-32 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Halo Marsha, saya ingin berdiskusi mengenai..."></textarea>
                     </div>
-                    <button class="w-full bg-rose-500 text-white font-bold py-4 rounded-2xl hover:bg-rose-600 transition-all shadow-lg shadow-rose-200">Kirim Sekarang</button>
+                    <button type="submit" class="w-full bg-rose-500 text-white font-bold py-4 rounded-2xl hover:bg-rose-600 transition-all shadow-lg shadow-rose-200">Kirim Sekarang</button>
                 </form>
             </div>
         </div>
         <div class="max-w-6xl mx-auto px-6 mt-20 pt-10 border-t border-indigo-900 text-center text-xs text-indigo-300/50">
             &copy; 2026 Marsha Yohan Widyarahma. Politeknik Elektronika Negeri Surabaya.
         </div>
-    </footer>
+    </section>
 
+    <!-- CONTAINER CHAT BOT AI (FIXED) -->
     <div class="fixed bottom-8 right-8 z-50 flex flex-col items-end">
         <div id="aiChat" class="hidden w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden mb-4 transition-all duration-300 transform scale-95 origin-bottom-right">
             <div class="bg-indigo-950 p-5 text-white flex items-center justify-between">
@@ -365,34 +400,71 @@
         </button>
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         const marshaAvatar = document.getElementById('marshaAvatar');
+        
         if (marshaAvatar) {
+            let isDragging = false;
+            let startX = 0, startY = 0;
+            let currentX = 0, currentY = 0;
+
             const resetAvatar = () => {
+                if(isDragging) return;
+                currentX = 0;
+                currentY = 0;
+                marshaAvatar.style.transition = 'transform 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                 marshaAvatar.style.setProperty('--rx', '0deg');
                 marshaAvatar.style.setProperty('--ry', '0deg');
                 marshaAvatar.style.setProperty('--mx', '50%');
                 marshaAvatar.style.setProperty('--my', '45%');
+                marshaAvatar.classList.add('avatar-float');
             };
 
+            marshaAvatar.addEventListener('pointerdown', (event) => {
+                isDragging = true;
+                startX = event.clientX - currentY; 
+                startY = event.clientY - currentX;
+                marshaAvatar.classList.remove('avatar-float');
+                marshaAvatar.style.transition = 'none';
+                marshaAvatar.setPointerCapture(event.pointerId);
+            });
+
             marshaAvatar.addEventListener('pointermove', (event) => {
-                const rect = marshaAvatar.getBoundingClientRect();
-                const x = (event.clientX - rect.left) / rect.width;
-                const y = (event.clientY - rect.top) / rect.height;
-                const rotateY = (x - 0.5) * 24;
-                const rotateX = (0.5 - y) * 18;
+                if (!isDragging) return;
+                const deltaX = event.clientX - startX;
+                const deltaY = event.clientY - startY;
+
+                const rotateY = Math.max(Math.min(deltaX * 0.4, 40), -40);
+                const rotateX = Math.max(Math.min(-deltaY * 0.4, 35), -35);
+
+                currentY = rotateY / 0.4;
+                currentX = -rotateX / 0.4;
 
                 marshaAvatar.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`);
                 marshaAvatar.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`);
-                marshaAvatar.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
-                marshaAvatar.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
+                
+                const glossX = 50 + (rotateY * 0.8);
+                const glossY = 45 - (rotateX * 0.8);
+                marshaAvatar.style.setProperty('--mx', `${glossX}%`);
+                marshaAvatar.style.setProperty('--my', `${glossY}%`);
             });
 
+            const stopDragging = (event) => {
+                if(!isDragging) return;
+                isDragging = false;
+                marshaAvatar.releasePointerCapture(event.pointerId);
+                resetAvatar();
+            };
+
+            marshaAvatar.addEventListener('pointerup', stopDragging);
+            marshaAvatar.addEventListener('pointercancel', stopDragging);
             marshaAvatar.addEventListener('pointerleave', resetAvatar);
-            marshaAvatar.addEventListener('pointercancel', resetAvatar);
         }
 
+        // --- INTERAKTIF AI CHATBOT KATA KUNCI ---
         function toggleAI() { document.getElementById('aiChat').classList.toggle('hidden'); }
+        
         function sayToAI() {
             const input = document.getElementById('aiText');
             const display = document.getElementById('aiDisplay');
@@ -403,26 +475,58 @@
             uMsg.innerText = input.value;
             display.appendChild(uMsg);
 
-            const q = input.value.toLowerCase();
+            const q = input.value.toLowerCase().trim();
             input.value = '';
             display.scrollTop = display.scrollHeight;
 
+            const typingDiv = document.createElement('div');
+            typingDiv.className = "bg-indigo-50 text-indigo-900 p-3 rounded-2xl rounded-tl-none border border-indigo-100 shadow-sm flex items-center gap-1 w-16 typing-indicator";
+            typingDiv.innerHTML = "<span></span><span></span><span></span>";
+            display.appendChild(typingDiv);
+            display.scrollTop = display.scrollHeight;
+
             setTimeout(() => {
+                display.removeChild(typingDiv);
+                
                 const botMsg = document.createElement('div');
                 botMsg.className = "bg-indigo-50 text-indigo-900 p-3 rounded-2xl rounded-tl-none border border-indigo-100 shadow-sm leading-relaxed";
                 
-                if(q.includes('pens') || q.includes('kuliah') || q.includes('studi')) {
-                    botMsg.innerText = "Marsha kuliah di PENS jurusan Teknologi Multimedia Broadcasting angkatan 2024. Saat ini sedang mendalami dunia media.";
-                } else if(q.includes('porto') || q.includes('karya') || q.includes('almaz') || q.includes('ayam')) {
-                    botMsg.innerText = "Karya unik Marsha adalah kloning web Toko Ayam Almaz (Kuliner) dan menjadi Announcer siaran di Studio TV 1 PENS.";
-                } else if(q.includes('hima') || q.includes('e2c') || q.includes('organisasi')) {
-                    botMsg.innerText = "Marsha aktif di Fungsionaris HIMA MMB PENS bagian Kerumahtanggaan dan Administrasi di EEPIS English Community (E2C).";
-                } else {
-                    botMsg.innerText = "Keahlian utama Marsha meliputi Radio Broadcasting, Event Management, dan Slicing Frontend Website. Ada yang mau ditanyakan lagi?";
+                if (q.includes('nama') || q.includes('siapa') || q.includes('panggilan') || q.includes('lengkap')) {
+                    botMsg.innerText = "Nama lengkap saya Marsha Yohan Widyarahma, biasa dipanggil Marsha! Saya mahasiswa Multimedia Broadcasting PENS.";
+                } 
+                else if (q.includes('pens') || q.includes('kuliah') || q.includes('jurusan') || q.includes('studi') || q.includes('mahasiswa') || q.includes('kampus')) {
+                    botMsg.innerText = "Saya kuliah di Politeknik Elektronika Negeri Surabaya (PENS), program studi D3 Teknologi Multimedia Broadcasting angkatan 2024. Kampus perjuangan!";
+                } 
+                else if (q.includes('porto') || q.includes('karya') || q.includes('projek') || q.includes('project') || q.includes('tugas')) {
+                    if (q.includes('almaz') || q.includes('ayam') || q.includes('web')) {
+                        botMsg.innerText = "Untuk projek Web Slicing, saya membuat replika antarmuka Frontend untuk Toko Ayam Almaz. Fokus pada akurasi layouting UI menggunakan Bootstrap!";
+                    } else if (q.includes('cream') || q.includes('hot') || q.includes('video')) {
+                        botMsg.innerText = "Saya membuat Video Explainer untuk produk 'Hot In Cream' sebagai bagian praktikum video dengan konsep visual komersial 2D.";
+                    } else if (q.includes('radio') || q.includes('siaran') || q.includes('announcer') || q.includes('innerspace')) {
+                        botMsg.innerText = "Saya menjadi Live Announcer di Innerspace FM (Studio TV 1 PENS) untuk membawakan program bertema Realita Mahasiswa Kampus.";
+                    } else {
+                        botMsg.innerText = "Beberapa projek andalan saya meliputi siaran Live Radio di Innerspace FM PENS, Video Explainer 'Hot In Cream', dan slicing frontend website Toko Ayam Almaz.";
+                    }
+                } 
+                else if (q.includes('organisasi') || q.includes('hima') || q.includes('e2c') || q.includes('kegiatan') || q.includes('panitia')) {
+                    botMsg.innerText = "Di kampus, saya aktif sebagai Fungsionaris HIMA MMB PENS di Departemen Kerumahtanggaan, serta menjadi staf Administrasi di EEPIS English Community (E2C).";
+                } 
+                else if (q.includes('kontak') || q.includes('email') || q.includes('hubungi') || q.includes('instagram') || q.includes('ig')) {
+                    botMsg.innerText = "Kamu bisa hubungi saya lewat formulir di bawah, email langsung ke marshayyohan@gmail.com, atau via IG di @marshayohan.";
+                } 
+                else if (q.includes('asal') || q.includes('tinggal') || q.includes('rumah') || q.includes('gresik')) {
+                    botMsg.innerText = "Saya berasal dari Gresik (alumnus SMA Muhammadiyah 1 Gresik) dan saat ini menetap di Surabaya untuk kuliah di PENS.";
                 }
+                else if (q.includes('halo') || q.includes('hai') || q.includes('p ') || q === 'p') {
+                    botMsg.innerText = "Halo! Ada yang bisa saya bantu? Silakan tanya seputar biodata, proyek portofolio, atau pengalaman organisasi saya.";
+                } 
+                else {
+                    botMsg.innerText = "Maaf, saya belum paham detail itu. Coba tanyakan: 'Siapa nama lengkap Marsha?', 'Proyek Innerspace FM', atau 'Kuliah di mana?'.";
+                }
+                
                 display.appendChild(botMsg);
                 display.scrollTop = display.scrollHeight;
-            }, 600);
+            }, 800);
         }
     </script>
 </body>
