@@ -17,6 +17,103 @@
         }
         .serif-title { font-family: 'Playfair Display', serif; }
         .glass-card { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(251, 146, 60, 0.1); }
+        .avatar-stage {
+            perspective: 1100px;
+            transform-style: preserve-3d;
+        }
+        .avatar-orbit {
+            --rx: 0deg;
+            --ry: 0deg;
+            --mx: 50%;
+            --my: 45%;
+            position: relative;
+            width: min(86vw, 430px);
+            aspect-ratio: 3 / 4;
+            display: grid;
+            place-items: end center;
+            transform: rotateX(var(--rx)) rotateY(var(--ry));
+            transform-style: preserve-3d;
+            transition: transform 180ms ease-out;
+            will-change: transform;
+        }
+        .avatar-orbit::before {
+            content: "";
+            position: absolute;
+            inset: 10% 5% 3%;
+            border-radius: 999px;
+            background:
+                radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.84), transparent 17%),
+                radial-gradient(circle at 35% 28%, rgba(251, 113, 133, .55), transparent 34%),
+                radial-gradient(circle at 76% 70%, rgba(251, 191, 36, .5), transparent 34%),
+                linear-gradient(145deg, rgba(255,255,255,.34), rgba(255,255,255,.02));
+            filter: blur(.2px);
+            transform: translateZ(-70px) scale(.95);
+            opacity: .85;
+        }
+        .avatar-orbit::after {
+            content: "";
+            position: absolute;
+            left: 14%;
+            right: 10%;
+            bottom: 2%;
+            height: 14%;
+            border-radius: 999px;
+            background: radial-gradient(ellipse, rgba(15, 23, 42, .23), transparent 68%);
+            transform: translateZ(-90px) rotateX(72deg);
+            filter: blur(12px);
+        }
+        .avatar-depth {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: end center;
+            transform-style: preserve-3d;
+            pointer-events: none;
+        }
+        .avatar-depth img {
+            position: absolute;
+            width: 92%;
+            max-height: 100%;
+            object-fit: contain;
+            transform-origin: center bottom;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        .avatar-shadow {
+            filter: blur(15px) brightness(0);
+            opacity: .23;
+            transform: translate3d(18px, 24px, -38px) scale(.985);
+        }
+        .avatar-rim {
+            filter: blur(7px) saturate(1.3);
+            opacity: .38;
+            transform: translate3d(-10px, -5px, -22px) scale(1.01);
+        }
+        .avatar-main {
+            filter: drop-shadow(0 32px 35px rgba(15, 23, 42, .28));
+            transform: translateZ(46px);
+        }
+        .avatar-gloss {
+            position: absolute;
+            inset: 8% 11% 5%;
+            border-radius: 45% 45% 36% 36%;
+            background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.28), transparent 23%);
+            mix-blend-mode: screen;
+            transform: translateZ(70px);
+            pointer-events: none;
+            opacity: .7;
+        }
+        .avatar-float {
+            animation: avatarFloat 5.5s ease-in-out infinite;
+        }
+        @keyframes avatarFloat {
+            0%, 100% { translate: 0 0; }
+            50% { translate: 0 -12px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .avatar-float { animation: none; }
+            .avatar-orbit { transition: none; }
+        }
     </style>
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
@@ -50,9 +147,15 @@
                 <a href="#about" class="w-full sm:w-auto text-center bg-white border border-slate-200 text-slate-700 font-bold px-8 py-4 rounded-2xl hover:bg-slate-50 transition-all">Kenal Lebih Dekat</a>
             </div>
         </div>
-        <div class="w-full md:w-1/2 flex justify-center relative">
-            <div class="absolute inset-0 bg-gradient-to-tr from-rose-200/50 to-amber-200/50 rounded-full filter blur-3xl opacity-60 w-72 h-72 m-auto -z-10"></div>
-            <img src="{{ asset('images/marsha-3d.png') }}" alt="Marsha 3D Character" class="w-72 md:w-96 drop-shadow-2xl object-contain hover:rotate-2 transition-transform duration-500">
+        <div class="w-full md:w-1/2 flex justify-center relative avatar-stage" aria-label="Karakter 3D Marsha yang bergerak mengikuti kursor">
+            <div class="avatar-orbit avatar-float" id="marshaAvatar">
+                <div class="avatar-depth">
+                    <img src="{{ asset('images/marsha-3d.png') }}" alt="" class="avatar-shadow" aria-hidden="true">
+                    <img src="{{ asset('images/marsha-3d.png') }}" alt="" class="avatar-rim" aria-hidden="true">
+                    <img src="{{ asset('images/marsha-3d.png') }}" alt="Marsha 3D Character" class="avatar-main">
+                    <span class="avatar-gloss" aria-hidden="true"></span>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -263,6 +366,32 @@
     </div>
 
     <script>
+        const marshaAvatar = document.getElementById('marshaAvatar');
+        if (marshaAvatar) {
+            const resetAvatar = () => {
+                marshaAvatar.style.setProperty('--rx', '0deg');
+                marshaAvatar.style.setProperty('--ry', '0deg');
+                marshaAvatar.style.setProperty('--mx', '50%');
+                marshaAvatar.style.setProperty('--my', '45%');
+            };
+
+            marshaAvatar.addEventListener('pointermove', (event) => {
+                const rect = marshaAvatar.getBoundingClientRect();
+                const x = (event.clientX - rect.left) / rect.width;
+                const y = (event.clientY - rect.top) / rect.height;
+                const rotateY = (x - 0.5) * 24;
+                const rotateX = (0.5 - y) * 18;
+
+                marshaAvatar.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`);
+                marshaAvatar.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`);
+                marshaAvatar.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
+                marshaAvatar.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
+            });
+
+            marshaAvatar.addEventListener('pointerleave', resetAvatar);
+            marshaAvatar.addEventListener('pointercancel', resetAvatar);
+        }
+
         function toggleAI() { document.getElementById('aiChat').classList.toggle('hidden'); }
         function sayToAI() {
             const input = document.getElementById('aiText');
