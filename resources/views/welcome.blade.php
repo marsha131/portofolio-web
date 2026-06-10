@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marsha Yohan Widyarahma - Portofolio Multimedia</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
@@ -33,24 +34,21 @@
             place-items: end center;
             transform: rotateX(var(--rx)) rotateY(var(--ry));
             transform-style: preserve-3d;
-            transition: transform 300ms ease-out;
+            transition: transform 180ms ease-out;
             will-change: transform;
-            cursor: grab;
-        }
-        .avatar-orbit:active {
-            cursor: grabbing;
+            cursor: crosshair;
         }
         .avatar-orbit::before {
             content: "";
             position: absolute;
-            inset: 10% 5% 3%;
-            border-radius: 999px;
+            inset: 4% 0 0;
+            border-radius: 2rem;
             background:
                 radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.84), transparent 17%),
-                radial-gradient(circle at 35% 28%, rgba(251, 113, 133, .55), transparent 34%),
-                radial-gradient(circle at 76% 70%, rgba(251, 191, 36, .5), transparent 34%),
-                linear-gradient(145deg, rgba(255,255,255,.34), rgba(255,255,255,.02));
-            filter: blur(.2px);
+                radial-gradient(circle at 24% 22%, rgba(251, 113, 133, .38), transparent 34%),
+                radial-gradient(circle at 80% 74%, rgba(251, 191, 36, .42), transparent 34%),
+                linear-gradient(145deg, rgba(255,255,255,.36), rgba(255,255,255,.05));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 28px 70px rgba(15, 23, 42, .12);
             transform: translateZ(-70px) scale(.95);
             opacity: .85;
         }
@@ -72,35 +70,28 @@
             display: grid;
             place-items: end center;
             transform-style: preserve-3d;
-            pointer-events: none;
+            pointer-events: auto;
         }
-        .avatar-depth img {
+        .avatar-model {
             position: absolute;
-            width: 92%;
-            max-height: 100%;
-            object-fit: contain;
-            transform-origin: center bottom;
-            user-select: none;
-            -webkit-user-drag: none;
-        }
-        .avatar-shadow {
-            filter: blur(15px) brightness(0);
-            opacity: .23;
-            transform: translate3d(18px, 24px, -38px) scale(.985);
-        }
-        .avatar-rim {
-            filter: blur(7px) saturate(1.3);
-            opacity: .38;
-            transform: translate3d(-10px, -5px, -22px) scale(1.01);
-        }
-        .avatar-main {
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            transform: translateZ(42px);
             filter: drop-shadow(0 32px 35px rgba(15, 23, 42, .28));
-            transform: translateZ(46px);
+            --poster-color: transparent;
+            --progress-bar-color: #f43f5e;
+            --progress-mask: transparent;
+            pointer-events: auto;
+        }
+        .avatar-model::part(default-progress-bar) {
+            height: 3px;
+            border-radius: 999px;
         }
         .avatar-gloss {
             position: absolute;
-            inset: 8% 11% 5%;
-            border-radius: 45% 45% 36% 36%;
+            inset: 8% 8% 5%;
+            border-radius: 2rem;
             background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.28), transparent 23%);
             mix-blend-mode: screen;
             transform: translateZ(70px);
@@ -170,12 +161,26 @@
                 <a href="#about" class="w-full sm:w-auto text-center bg-white border border-slate-200 text-slate-700 font-bold px-8 py-4 rounded-2xl hover:bg-slate-50 transition-all">Kenal Lebih Dekat</a>
             </div>
         </div>
-        <div class="w-full md:w-1/2 flex justify-center relative avatar-stage" aria-label="Karakter 3D Marsha yang bisa digeser menggunakan kursor">
-            <div class="avatar-orbit avatar-float" id="marshaAvatar">
+        <div class="w-full md:w-1/2 flex justify-center relative avatar-stage" aria-label="Karakter 3D Marsha yang bergerak mengikuti kursor">
+            <div class="avatar-orbit avatar-float" id="marshaAvatar" data-view="front">
                 <div class="avatar-depth">
-                    <img src="images/marsha-3d.png" alt="" class="avatar-shadow" aria-hidden="true">
-                    <img src="images/marsha-3d.png" alt="" class="avatar-rim" aria-hidden="true">
-                    <img src="images/marsha-3d.png" alt="Marsha 3D Character" class="avatar-main">
+                    <model-viewer
+                        class="avatar-model"
+                        src="{{ asset('models/marsha-3d.glb') }}"
+                        alt="Model 3D Marsha"
+                        camera-controls
+                        touch-action="pan-y"
+                        interaction-prompt="none"
+                        auto-rotate
+                        auto-rotate-delay="1200"
+                        rotation-per-second="24deg"
+                        camera-orbit="0deg 75deg 3m"
+                        min-camera-orbit="auto auto 2.4m"
+                        max-camera-orbit="auto auto 4.2m"
+                        shadow-intensity="0.55"
+                        exposure="1"
+                        ar>
+                    </model-viewer>
                     <span class="avatar-gloss" aria-hidden="true"></span>
                 </div>
             </div>
@@ -405,15 +410,7 @@
         const marshaAvatar = document.getElementById('marshaAvatar');
         
         if (marshaAvatar) {
-            let isDragging = false;
-            let startX = 0, startY = 0;
-            let currentX = 0, currentY = 0;
-
             const resetAvatar = () => {
-                if(isDragging) return;
-                currentX = 0;
-                currentY = 0;
-                marshaAvatar.style.transition = 'transform 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                 marshaAvatar.style.setProperty('--rx', '0deg');
                 marshaAvatar.style.setProperty('--ry', '0deg');
                 marshaAvatar.style.setProperty('--mx', '50%');
@@ -421,44 +418,23 @@
                 marshaAvatar.classList.add('avatar-float');
             };
 
-            marshaAvatar.addEventListener('pointerdown', (event) => {
-                isDragging = true;
-                startX = event.clientX - currentY; 
-                startY = event.clientY - currentX;
-                marshaAvatar.classList.remove('avatar-float');
-                marshaAvatar.style.transition = 'none';
-                marshaAvatar.setPointerCapture(event.pointerId);
-            });
-
             marshaAvatar.addEventListener('pointermove', (event) => {
-                if (!isDragging) return;
-                const deltaX = event.clientX - startX;
-                const deltaY = event.clientY - startY;
+                const rect = marshaAvatar.getBoundingClientRect();
+                const x = (event.clientX - rect.left) / rect.width;
+                const y = (event.clientY - rect.top) / rect.height;
+                const clampedX = Math.min(Math.max(x, 0), 1);
+                const clampedY = Math.min(Math.max(y, 0), 1);
+                const rotateY = (clampedX - 0.5) * 42;
+                const rotateX = (0.5 - clampedY) * 22;
 
-                const rotateY = Math.max(Math.min(deltaX * 0.4, 40), -40);
-                const rotateX = Math.max(Math.min(-deltaY * 0.4, 35), -35);
-
-                currentY = rotateY / 0.4;
-                currentX = -rotateX / 0.4;
-
+                marshaAvatar.classList.remove('avatar-float');
                 marshaAvatar.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`);
                 marshaAvatar.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`);
-                
-                const glossX = 50 + (rotateY * 0.8);
-                const glossY = 45 - (rotateX * 0.8);
-                marshaAvatar.style.setProperty('--mx', `${glossX}%`);
-                marshaAvatar.style.setProperty('--my', `${glossY}%`);
+                marshaAvatar.style.setProperty('--mx', `${(clampedX * 100).toFixed(1)}%`);
+                marshaAvatar.style.setProperty('--my', `${(clampedY * 100).toFixed(1)}%`);
             });
 
-            const stopDragging = (event) => {
-                if(!isDragging) return;
-                isDragging = false;
-                marshaAvatar.releasePointerCapture(event.pointerId);
-                resetAvatar();
-            };
-
-            marshaAvatar.addEventListener('pointerup', stopDragging);
-            marshaAvatar.addEventListener('pointercancel', stopDragging);
+            marshaAvatar.addEventListener('pointercancel', resetAvatar);
             marshaAvatar.addEventListener('pointerleave', resetAvatar);
         }
 
