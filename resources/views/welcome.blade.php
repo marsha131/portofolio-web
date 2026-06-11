@@ -249,16 +249,19 @@
                             <h4 class="font-bold text-primary mb-5 flex items-center gap-2 transition-colors"><i class="fa-solid fa-clipboard-list text-accent"></i> Kepanitiaan</h4>
                             <ul class="space-y-4 text-sm text-slate-600">
                                 <li>
+                                    <span class="text-primary font-bold block leading-tight transition-colors">LKMM Tingkat Pra-Dasar PENS</span>
+                                    <span class="text-xs block text-slate-500 mt-0.5">Liaison Officer / LO (2025)</span>
+                                </li>
+                                <li>
                                     <span class="text-primary font-bold block leading-tight transition-colors">LKMM Pra-Dasar PENS</span>
                                     <span class="text-xs block text-slate-500 mt-0.5">Divisi Kesehatan (2026)</span>
-                                    <span class="text-xs block text-slate-500">Liaison Officer / LO (2025)</span>
                                 </li>
                                 <li>
                                     <span class="text-primary font-bold block leading-tight transition-colors">MMB Fest PENS</span>
-                                    <span class="text-xs block text-slate-500 mt-0.5">Divisi_Konsumsi (2025)</span>
+                                    <span class="text-xs block text-slate-500 mt-0.5">Divisi Konsumsi (2025)</span>
                                 </li>
                                 <li>
-                                    <span class="text-primary font-bold block leading-tight transition-colors">PKKMB PENS</span>
+                                    <span class="text-primary font-bold block leading-tight transition-colors">PKKMB x Technogear PENS</span>
                                     <span class="text-xs block text-slate-500 mt-0.5">Divisi Siaga / Keamanan (2025)</span>
                                 </li>
                             </ul>
